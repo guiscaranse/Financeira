@@ -71,4 +71,19 @@ public class InstituicaoFinanceira {
 	    });
 		return busca;
 	}
+	public boolean adicionaEmprestimo(Emprestimo e){
+		ArrayList <Emprestimo> e_cliente = getEmprestimosPorCliente(e.getCliente());
+		for (Emprestimo o : e_cliente){
+			if(o.getSaldoDevedor() > 0){
+				return false;
+			}
+		}
+		if(this.montante - e.getValorEmprestimo() < 0){
+			return false;
+		}else{
+			// Empréstimo aceito
+			this.emprestimos.add(e);
+			return true;
+		}
+	}
 }
