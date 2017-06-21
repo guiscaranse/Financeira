@@ -6,6 +6,14 @@ public class Emprestimo {
 	private boolean bloqueado;
 	private Parcela parcelaAtual;
 	private Calendar data;
+	private Cliente cliente;
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 	public int getCodigo() {
 		return codigo;
 	}

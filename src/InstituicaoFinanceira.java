@@ -40,6 +40,14 @@ public class InstituicaoFinanceira {
 			}
 		} 
 		return false;
-		
+	}
+	public ArrayList<Cliente> buscaClientesPorNome(String nome){
+		ArrayList<Cliente> busca = new ArrayList<Cliente>();
+		for (Cliente c : Cliente.getClientes()){
+			if(c.getNome().contains(nome)){
+				busca.add(c);
+			}
+		}
+		return busca;
 	}
 }
