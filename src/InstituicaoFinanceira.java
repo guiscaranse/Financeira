@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class InstituicaoFinanceira {
 	private int codigo;
@@ -48,6 +50,25 @@ public class InstituicaoFinanceira {
 				busca.add(c);
 			}
 		}
+		return busca;
+	}
+	public ArrayList<Emprestimo> getEmprestimosPorCliente(Cliente c){
+		ArrayList<Emprestimo> busca = new ArrayList<Emprestimo>();
+		for (Emprestimo e : this.emprestimos){
+			if(e.getCliente().equals(c)){
+				busca.add(e);
+			}
+		}
+		/*
+		 * Aqui iremos inserir um in-line comparator e construir para comparar o valor das parcelas
+		 * Como por padrão "compare" só retorna inteiro, é possível usar o compare do da própria classe do double
+		 * para realizar a comparação ao invés de simplesmente subtraí-los
+		 */
+	    Collections.sort(busca, new Comparator<Emprestimo>() {
+	        @Override public int compare(Emprestimo e1, Emprestimo e2) {
+	        	return Double.compare(e1.getParcelaAtual().getValor(), e2.getParcelaAtual().getValor());  
+	        }
+	    });
 		return busca;
 	}
 }

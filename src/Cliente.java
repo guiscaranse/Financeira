@@ -27,4 +27,8 @@ public class Cliente {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+	public boolean equals(Object obj) {
+		Cliente o = (Cliente) obj;
+		return o.equals(obj);
+	}
 }
