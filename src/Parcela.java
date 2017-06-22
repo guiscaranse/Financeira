@@ -3,6 +3,10 @@ import java.util.Calendar;
 public class Parcela{
 	private Calendar dataVencimento;
 	private double valor;
+	Parcela(Calendar vencimento, double valor){
+		this.dataVencimento = vencimento;
+		this.valor = valor;
+	}
 	public double getValor() {
 		return valor;
 	}

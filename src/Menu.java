@@ -1,3 +1,5 @@
+import java.util.Calendar;
+
 import javax.swing.JOptionPane;
 class Menu {
 
@@ -18,6 +20,12 @@ class Menu {
                 	  try {
                 		   // Tenta logar o cliente, caso contrário procede
                 		   Cliente c = loginCliente(i);
+	                     	  try {
+	                   		   // Tenta logar o cliente, caso contrário procede
+	                   		   Emprestimo e = novoEmprestimo(c, i);
+	                   		  } catch (IllegalArgumentException e) {
+	                   			  
+	                   		  }
                 		  } catch (IllegalArgumentException e) {}
                     break;
                 case 2:
@@ -59,7 +67,7 @@ class Menu {
         	r = new Cliente(nome, cpf);
         }else if(opcao == x+1){
         	throw new IllegalArgumentException();
-        }else if(opcao > x+1 || opcao < x+1){
+        }else if(opcao > x+1 || opcao < 1){
         	JOptionPane.showMessageDialog(null, "Opção Inválida");
         	throw new IllegalArgumentException();
         }else{
@@ -72,10 +80,23 @@ class Menu {
 		 * Aqui iremos tentar criar um empréstimo
 		 */
 		Emprestimo e = new Emprestimo(c);
-		double v_emprestimo = Double.parseInt(JOptionPane.showInputDialog("Valor do empréstimo?"));
+		double v_emprestimo = Double.parseDouble(JOptionPane.showInputDialog("Valor do empréstimo?"));
     	int parcelas = Integer.parseInt(JOptionPane.showInputDialog("Em quantas parcelas você deseja pagar?"));
+		e.setBloqueado(true);
+		e.setValorEmprestimo(v_emprestimo);
+		e.setSaldoDevedor(v_emprestimo);
+		e.setQuantidadeParcelasRestantes(parcelas);
+		e.setCodigo(i.getEmprestimos().size()+1);
+		Calendar data = Calendar.getInstance();
+		data.add(Calendar.MONTH, 1); // Parcela atual é para próximo mês
+		e.setParcelaAtual(new Parcela(data, v_emprestimo/parcelas));
+		if(i.adicionaEmprestimo(e)){
+			return e;
+		}else{
+			JOptionPane.showMessageDialog(null, "Não foi possível criar seu impréstimo. Alguns motivos podem ser:\n1. Você já possui um empréstimo\n2. A instituição não possuí dinheiro suficiente");
+			throw new IllegalArgumentException();
+		}
 		
-		return e;
 	}
 	
 

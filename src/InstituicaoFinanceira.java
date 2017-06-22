@@ -83,6 +83,7 @@ public class InstituicaoFinanceira {
 			return false;
 		}else{
 			// Empréstimo aceito
+			this.montante = this.montante - e.getValorEmprestimo();
 			this.emprestimos.add(e);
 			return true;
 		}
