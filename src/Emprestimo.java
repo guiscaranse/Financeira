@@ -7,7 +7,10 @@ public class Emprestimo {
 	private Parcela parcelaAtual;
 	private Calendar data;
 	private Cliente cliente;
-	
+	Emprestimo(Cliente c){
+		this.cliente = c;
+		this.data = Calendar.getInstance();
+	}
 	public Cliente getCliente() {
 		return cliente;
 	}

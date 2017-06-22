@@ -6,8 +6,9 @@ public class InstituicaoFinanceira {
 	private int codigo;
 	private double montante;
 	private ArrayList<Emprestimo> emprestimos = new ArrayList<Emprestimo>();
-	InstituicaoFinanceira(double m){
+	InstituicaoFinanceira(int codigo, double m){
 		this.montante = m;
+		this.codigo = codigo;
 	}
 	public int getCodigo() {
 		return codigo;

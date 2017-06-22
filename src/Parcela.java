@@ -1,6 +1,6 @@
 import java.util.Calendar;
 
-public class Parcela extends Emprestimo{
+public class Parcela{
 	private Calendar dataVencimento;
 	private double valor;
 	public double getValor() {
