@@ -31,7 +31,7 @@ public class InstituicaoFinanceira {
 	/*
 	 * Métodos pedidos do PDF
 	 */
-	public boolean removeEmprestimo(ArrayList<Emprestimo> emprestimo){
+	public boolean removeEmprestimo(Emprestimo emprestimo){
 		int posicao = this.emprestimos.indexOf(emprestimo);
 		if (posicao != -1) {
 			// Encontrou
@@ -40,6 +40,7 @@ public class InstituicaoFinanceira {
 				return false;
 			}else{
 				this.emprestimos.remove(this.emprestimos.get(posicao));
+				return true;
 			}
 		} 
 		return false;
@@ -47,7 +48,7 @@ public class InstituicaoFinanceira {
 	public ArrayList<Cliente> buscaClientesPorNome(String nome){
 		ArrayList<Cliente> busca = new ArrayList<Cliente>();
 		for (Cliente c : Cliente.getClientes()){
-			if(c.getNome().contains(nome)){
+			if(c.getNome().toLowerCase().contains(nome.toLowerCase())){
 				busca.add(c);
 			}
 		}
