@@ -27,8 +27,10 @@ public class Cliente {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public boolean equals(Object obj) {
-		Cliente o = (Cliente) obj;
-		return o.equals(obj);
+	public boolean equals(Cliente c) {
+		if(c.getCpf().equals(this.cpf) && c.getNome().equals(this.nome)){
+			return true;
+		}
+		return false;
 	}
 }
