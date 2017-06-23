@@ -59,6 +59,9 @@ class Menu {
                 		JOptionPane.showMessageDialog(null, "Oops algo deu errado...");
                 	}
                 	break;
+                case 5:
+                	relatorio(i);
+                	break;
                 case 6:
                 	break tela;
             }
@@ -186,5 +189,29 @@ class Menu {
         }
         JOptionPane.showMessageDialog(null, r);
 	}
-
+	public static void relatorio(InstituicaoFinanceira i){
+		String r = "Relatório:"+
+				"\nInstituição (Código): " + i.getCodigo()+
+				"\nNúmero de Clientes: " + Cliente.getClientes().size()+
+				"\nNúmero de Empréstimos: " + i.getEmprestimos().size()+
+				"\n########################################\n"+
+				"Clientes: \n";
+		int x = 0;
+        for (Cliente z : Cliente.getClientes()){
+        	x++;
+        		r+= x + ") Nome: "+ z.getNome() + 
+         			   "\n     CPF: " + z.getCpf() + 
+         			   "\n     Número de empréstimos: " + i.getEmprestimosPorCliente(z).size() + "\n";
+        }
+        r+="########################################\n";
+        r+="Empréstimos: \n";
+		x = 0;
+        for (Emprestimo z : i.getEmprestimos()){
+        	x++;
+        	r+= x + ") Código: "+ z.getCodigo() + 
+        			   "\n     De: " + z.getCliente().getNome() + 
+        			   "\n     Valor: R$" + z.getValorEmprestimo() + "\n";
+        }
+        JOptionPane.showMessageDialog(null, r);
+	}
 }
