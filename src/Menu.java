@@ -1,4 +1,6 @@
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 class Menu {
@@ -10,7 +12,8 @@ class Menu {
                     "  2) Remover emprestimo\n" +
                     "  3) Buscar clientes por nome\n" +
                     "  4) Buscar empréstimos por cliente\n" +
-                    "  5) Sair\n";
+                    "  5) Relatório\n" +
+                    "  6) Sair\n";
 
         tela: while(true){
             int opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -18,27 +21,70 @@ class Menu {
             {
                 case 1:
                 	  try {
-                		   // Tenta logar o cliente, caso contrário procede
-                		   Cliente c = loginCliente(i);
+                		   // Tenta logar o cliente, caso contrário aborta.
+                		   Cliente c = selecionaCliente(i);
 	                     	  try {
-	                   		   // Tenta logar o cliente, caso contrário procede
-	                   		   Emprestimo e = novoEmprestimo(c, i);
-	                   		  } catch (IllegalArgumentException e) {
+	                   		   // Tenta criar empréstimo, caso contrário aborta.
+	                   		   novoEmprestimo(c, i);
+	                   		  } catch (IllegalArgumentException x) {
 	                   			  
 	                   		  }
-                		  } catch (IllegalArgumentException e) {}
+                		  } catch (IllegalArgumentException x) {}
                     break;
                 case 2:
+                	try {
+                		Emprestimo e = selecionaEmprestimo(i);
+	                	if(!i.removeEmprestimo(e)){
+	                		JOptionPane.showMessageDialog(null, "Não foi possível remover seu impréstimo. Alguns motivos podem ser:\n1. O empréstimo está bloqueado.\n2. O empréstimo selecionado é válido?");
+	                	}else{
+	                		JOptionPane.showMessageDialog(null, "Empréstimo removido!");
+	                	}
+                	} catch (IllegalArgumentException x){
+                		
+                	}
                     break;
                 case 3:
+                	try {
+                		buscaClientePorNome(i);
+                	} catch (IllegalArgumentException x){
+                		
+                	}
                     break;
-                case 5 :
+                case 4:
+                	try {
+                		Cliente c = selecionaCliente(i);
+                		exibeEmprestimosCliente(c, i);
+                    	
+                	} catch (IllegalArgumentException x){
+                		JOptionPane.showMessageDialog(null, "Oops algo deu errado...");
+                	}
+                	break;
+                case 6:
                 	break tela;
             }
             
         }
     }
-	public static Cliente loginCliente(InstituicaoFinanceira i){
+	private static void exibeEmprestimosCliente(Cliente c, InstituicaoFinanceira i) {
+		String r = "Emprestimos encontrados:\n";
+        int x = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m");
+        System.out.print(i.getEmprestimosPorCliente(c).size());
+		for(Emprestimo e : i.getEmprestimosPorCliente(c)){
+            	x++;
+            	r+= x + ") Cliente: "+ e.getCliente().getNome() + 
+             		   "\n     Código: " + e.getCodigo() + 
+             		   "\n     Valor do Empréstimo: R$" + e.getValorEmprestimo() +
+             		   "\n     Número de parcelas restantes: " + e.getQuantidadeParcelasRestantes()+
+             		   "\n     Saldo devedor: R$" + e.getSaldoDevedor() +
+             		   "\n     Data: " + sdf.format((Date) e.getData().getTime()) +
+             		   "\n";
+            
+		}
+		JOptionPane.showMessageDialog(null, r);
+		
+	}
+	public static Cliente selecionaCliente(InstituicaoFinanceira i){
 		/*
 		 * Aqui iremos tentar escolher um cliente, o menu é dinamicamente gerado com base no número de clientes
 		 * Quando o cliente for escolhido nós retornamos o mesmo
@@ -58,9 +104,9 @@ class Menu {
         	String nome = JOptionPane.showInputDialog("Qual é o seu nome?");
         	String cpf = JOptionPane.showInputDialog("Qual é o seu cpf?");
             for (Cliente d : Cliente.getClientes()){
-            	if(d.getNome().equals(nome) && d.getCpf().equals(cpf)){
+            	if(d.getNome().equals(nome) && d.getCpf().equals(cpf) || d.getCpf().equals(cpf)){
             		// Verificamos se o cliente já existe
-            		JOptionPane.showMessageDialog(null, "Cliente já cadastrado");
+            		JOptionPane.showMessageDialog(null, "Cliente ou CPF já cadastrado");
             		throw new IllegalArgumentException();
             	}
             }
@@ -82,7 +128,7 @@ class Menu {
 		Emprestimo e = new Emprestimo(c);
 		double v_emprestimo = Double.parseDouble(JOptionPane.showInputDialog("Valor do empréstimo?"));
     	int parcelas = Integer.parseInt(JOptionPane.showInputDialog("Em quantas parcelas você deseja pagar?"));
-		e.setBloqueado(true);
+		e.setBloqueado(false);
 		e.setValorEmprestimo(v_emprestimo);
 		e.setSaldoDevedor(v_emprestimo);
 		e.setQuantidadeParcelasRestantes(parcelas);
@@ -98,6 +144,47 @@ class Menu {
 		}
 		
 	}
-	
+	public static Emprestimo selecionaEmprestimo(InstituicaoFinanceira i){
+		/*
+		 * Aqui iremos tentar escolher um empréstmo, o menu é dinamicamente gerado com base no número de empréstimos
+		 * Quando o empréstimo for escolhido nós retornamos o mesmo
+		 * Caso alguma opção inválida ou sair for escolhida nós retornamos uma excessão para interromper o método
+		 */
+		Emprestimo r;
+        String menu="Selecione um empréstimo: \n";
+        int x = 0;
+        for (Emprestimo z : i.getEmprestimos()){
+        	x++;
+        	menu+= x + ") Código: "+ z.getCodigo() + 
+        			   "\n     De: " + z.getCliente().getNome() + 
+        			   "\n     Valor: " + z.getValorEmprestimo() + "\n";
+        }
+        menu+= x+1 + ") Sair";
+        int opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        if(opcao == x+1){
+        	throw new IllegalArgumentException();
+        }else if(opcao > x+1 || opcao < 1){
+        	JOptionPane.showMessageDialog(null, "Opção Inválida");
+        	throw new IllegalArgumentException();
+        }else{
+        	r = i.getEmprestimos().get(x-1);
+        }
+        return r;
+	}
+	public static void buscaClientePorNome(InstituicaoFinanceira i){
+		/*
+		 * Aqui iremos tentar encontrar o cliente, o menu é dinamicamente gerado com base no número de clientes encontrados
+		 */
+		String r = "Usuários encontrados:\n";
+		String nome = JOptionPane.showInputDialog("Qual é o nome do cliente?");
+        int x = 0;
+        for (Cliente z : i.buscaClientesPorNome(nome)){
+        	x++;
+        		r+= x + ") Nome: "+ z.getNome() + 
+         			   "\n     CPF: " + z.getCpf() + 
+         			   "\n     Número de empréstimos: " + i.getEmprestimosPorCliente(z).size() + "\n";
+        }
+        JOptionPane.showMessageDialog(null, r);
+	}
 
 }
