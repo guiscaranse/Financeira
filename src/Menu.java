@@ -12,8 +12,9 @@ class Menu {
                     "  2) Remover emprestimo\n" +
                     "  3) Buscar clientes por nome\n" +
                     "  4) Buscar empréstimos por cliente\n" +
-                    "  5) Relatório\n" +
-                    "  6) Sair\n";
+                    "  5) Quitar empréstimo\n"+
+                    "  6) Relatório\n" +
+                    "  7) Sair\n";
 
         tela: while(true){
             int opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -60,9 +61,18 @@ class Menu {
                 	}
                 	break;
                 case 5:
-                	relatorio(i);
+                	try {
+                		Cliente c = selecionaCliente(i);
+                		quitarEmprestimosPorCliente(c, i);
+                    	
+                	} catch (IllegalArgumentException x){
+                		JOptionPane.showMessageDialog(null, "Oops... Empréstimo inválido!");
+                	}
                 	break;
                 case 6:
+                	relatorio(i);
+                	break;
+                case 7:
                 	break tela;
             }
             
@@ -210,8 +220,42 @@ class Menu {
         	x++;
         	r+= x + ") Código: "+ z.getCodigo() + 
         			   "\n     De: " + z.getCliente().getNome() + 
-        			   "\n     Valor: R$" + z.getValorEmprestimo() + "\n";
+        			   "\n     Valor: R$" + z.getValorEmprestimo()+
+        			   "\n     Saldo devedor: R$"+ z.getSaldoDevedor() + "\n";
         }
         JOptionPane.showMessageDialog(null, r);
+	}
+	private static void quitarEmprestimosPorCliente(Cliente c, InstituicaoFinanceira i) {
+		String r = "Emprestimos encontrados:\n";
+        int x = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m");
+        System.out.print(i.getEmprestimosPorCliente(c).size());
+		for(Emprestimo e : i.getEmprestimosPorCliente(c)){
+            	x++;
+            	r+= x + ") Cliente: "+ e.getCliente().getNome() + 
+             		   "\n     Código: " + e.getCodigo() + 
+             		   "\n     Valor do Empréstimo: R$" + e.getValorEmprestimo() +
+             		   "\n     Número de parcelas restantes: " + e.getQuantidadeParcelasRestantes()+
+             		   "\n     Saldo devedor: R$" + e.getSaldoDevedor() +
+             		   "\n     Data: " + sdf.format((Date) e.getData().getTime()) +
+             		   "\n";
+            
+		}
+		r+="\nQual emprestimo deseja quitar?\n";
+		int opcao = Integer.parseInt(JOptionPane.showInputDialog(r));
+        if(opcao == x+1){
+        	throw new IllegalArgumentException();
+        }else if(opcao > x+1 || opcao < 1){
+        	JOptionPane.showMessageDialog(null, "Opção Inválida");
+        	throw new IllegalArgumentException();
+        }else{
+        	if(i.quitarEmprestimo(i.getEmprestimos().get(opcao-1))){
+        		JOptionPane.showMessageDialog(null, "Removido!");
+        	}else{
+        		JOptionPane.showMessageDialog(null, "Empréstimo não pode ser removido");
+        		throw new IllegalArgumentException();
+        	}
+        }
+		
 	}
 }
