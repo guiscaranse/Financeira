@@ -89,4 +89,14 @@ public class InstituicaoFinanceira {
 			return true;
 		}
 	}
+	public boolean quitarEmprestimo(Emprestimo e){
+		int posicao = this.emprestimos.indexOf(e);
+		if (posicao != -1) {
+			// Encontrou
+			this.montante += this.emprestimos.get(posicao).getSaldoDevedor();
+			this.emprestimos.get(posicao).setSaldoDevedor(0);
+			return true;
+		} 
+		return false;
+	}
 }
